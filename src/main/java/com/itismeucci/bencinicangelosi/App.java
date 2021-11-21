@@ -11,5 +11,6 @@ public class App
         ClientStr cliente = new ClientStr();
         cliente.connetti();
         cliente.comunica();
+        
     }
 }

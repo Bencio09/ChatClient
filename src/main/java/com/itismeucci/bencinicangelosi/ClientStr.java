@@ -14,6 +14,8 @@ public class ClientStr {
     BufferedReader inDalServer;
     boolean isStopped = false;
     String nomeUtente = "";
+    ThreadIn threadIn;
+    ThreadOut threadOut;
 
     public Socket connetti(){
         System.out.println("2 CLIENT partito in esecuzione ...");
@@ -23,7 +25,9 @@ public class ClientStr {
 
             outVersoServer = new DataOutputStream(miosocket.getOutputStream());
             inDalServer = new BufferedReader(new InputStreamReader(miosocket.getInputStream()));
+            System.out.println("Inserisci il nome utente\n");
             nomeUtente = tastiera.readLine();
+            
             outVersoServer.writeBytes(nomeUtente);
         } catch (UnknownHostException e) {
             System.err.println("Host sconosciuto");
@@ -47,14 +51,11 @@ public class ClientStr {
     public void comunica(){
         for(;;)
         try{
-            System.out.println("4... Inserisci la stringa da trasmettere al server:" + "\n");
             stringaUtente = tastiera.readLine();
-
-            System.out.println("5... invio la stringa ");
             outVersoServer.writeBytes(stringaUtente + '\n');
 
             stringaRicevutaDalServer = inDalServer.readLine();
-            System.out.println("7 ... risposta dal server " + '\n' + stringaRicevutaDalServer);
+            System.out.println(stringaRicevutaDalServer);
             if(stringaUtente.equals("FINE") || stringaUtente.equals("STOP")){
                 if(isStopped){
                     break;
@@ -68,6 +69,17 @@ public class ClientStr {
             System.out.println(e.getMessage());
             System.out.println("Errore durante la comunicazione col server!");
             System.exit(1);
+        }
+    }
+
+    public void close(){
+        try {
+            inDalServer.close();
+            outVersoServer.close();
+            miosocket.close();
+            threadIn.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }
